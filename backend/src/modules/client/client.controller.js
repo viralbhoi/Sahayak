@@ -1,12 +1,8 @@
 import * as clientService from "./client.service.js";
+import asyncHandler from "../../utils/asyncHandler.js";
+import { success } from "../../utils/apiResponse.js";
 
-export const createClient = async (req, res) => {
-    try {
-        const client = await clientService.createClient(req.body);
-        res.status(201).json(client);
-    } catch (error) {
-        res.status(400).json({
-            error: error.message,
-        });
-    }
-};
+export const createClient = asyncHandler(async (req, res) => {
+    const client = await clientService.createClient(req.body);
+    success(res, client, 201);
+});

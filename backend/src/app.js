@@ -1,12 +1,15 @@
 import express from "express";
 import dotenv from "dotenv";
 import routes from "./routes/index.js";
+import logger from "./middlewares/logger.middleware.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+
+app.use(logger);
 
 app.get("/health", (req, res) => {
     res.status(200).json({
