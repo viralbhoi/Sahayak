@@ -72,3 +72,14 @@ ORDER BY
     (w.area = 'Alkapuri') DESC,
     last_assigned_at NULLS FIRST
 LIMIT 5;
+
+CREATE TABLE otp_codes (
+    id SERIAL PRIMARY KEY,
+    phone VARCHAR(15) NOT NULL,
+    otp VARCHAR(6) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE otp_codes
+ADD COLUMN attempts INT DEFAULT 0;

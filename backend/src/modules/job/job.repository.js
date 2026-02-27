@@ -31,3 +31,13 @@ export const getMatchesByJob = async (dbClient, jobId) => {
     const { rows } = await dbClient.query(query, [jobId]);
     return rows;
 };
+
+export const findJobById = async (jobId) => {
+    const query = `
+    SELECT id, client_id
+    FROM job_requests
+    WHERE id = $1
+  `;
+    const { rows } = await pool.query(query, [jobId]);
+    return rows[0];
+};

@@ -8,7 +8,9 @@ export const createJob = asyncHandler(async (req, res) => {
 });
 
 export const getMatches = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const matches = await jobService.getMatches(id);
-    success(res, matches, 200);
+    const jobId = Number(req.params.id);
+
+    const matches = await jobService.getMatches(jobId, req.user);
+
+    success(res, matches);
 });
