@@ -56,6 +56,10 @@ function WorkerDashboard() {
                 <Button className="mt-6" onClick={toggleAvailability}>
                     Toggle Availability
                 </Button>
+
+                <Button onClick={() => navigate("/worker/jobs")}>
+                    View Jobs
+                </Button>
             </Card>
         </Layout>
     );

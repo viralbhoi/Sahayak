@@ -19,3 +19,8 @@ export const getMyJobs = asyncHandler(async (req, res) => {
     const jobs = await jobService.getMyJobs(req.user.id);
     success(res, jobs);
 });
+
+export const getWorkerFeed = asyncHandler(async (req, res) => {
+    const jobs = await jobService.getWorkerFeed(req.user.id);
+    success(res, jobs);
+});

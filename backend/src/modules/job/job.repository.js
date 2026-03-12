@@ -53,3 +53,19 @@ export const findByClientId = async (clientId) => {
     const { rows } = await pool.query(query, [clientId]);
     return rows;
 };
+
+export const findJobsForWorker = async (workerId) => {
+    const query = `
+    SELECT j.*
+    FROM job_requests j
+    JOIN worker_skills ws ON ws.skill_id = j.skill_id
+    JOIN workers w ON w.id = ws.worker_id
+    WHERE w.id = $1
+      AND w.availability = true
+      AND w.city = j.city
+    ORDER BY j.created_at DESC
+  `;
+
+    const { rows } = await pool.query(query, [workerId]);
+    return rows;
+};

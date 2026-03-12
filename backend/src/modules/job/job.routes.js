@@ -29,4 +29,11 @@ router.get(
     jobController.getMatches,
 );
 
+router.get(
+    "/worker-feed",
+    protect,
+    allowRoles("worker"),
+    jobController.getWorkerFeed,
+);
+
 export default router;

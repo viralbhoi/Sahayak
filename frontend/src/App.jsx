@@ -10,6 +10,7 @@ import Matches from "./pages/Matches";
 import ProtectedRoute from "./components/ProtectedRoute";
 import WorkerDashboard from "./pages/WorkerDashboard";
 import ClientJobs from "./pages/ClientJobs";
+import WorkerJobs from "./pages/WorkerJobs";
 
 function App() {
     return (
@@ -67,6 +68,15 @@ function App() {
                     element={
                         <ProtectedRoute role="client">
                             <Matches />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/worker/jobs"
+                    element={
+                        <ProtectedRoute role="worker">
+                            <WorkerJobs />
                         </ProtectedRoute>
                     }
                 />

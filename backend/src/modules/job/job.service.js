@@ -60,3 +60,7 @@ export const getMatches = async (jobId, user) => {
 export const getMyJobs = async (clientId) => {
     return await jobRepository.findByClientId(clientId);
 };
+
+export const getWorkerFeed = async (workerId) => {
+    return await jobRepository.findJobsForWorker(workerId);
+};
