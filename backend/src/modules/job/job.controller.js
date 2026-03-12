@@ -14,3 +14,8 @@ export const getMatches = asyncHandler(async (req, res) => {
 
     success(res, matches);
 });
+
+export const getMyJobs = asyncHandler(async (req, res) => {
+    const jobs = await jobService.getMyJobs(req.user.id);
+    success(res, jobs);
+});

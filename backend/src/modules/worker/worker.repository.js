@@ -35,3 +35,14 @@ export const updateAvailability = async (workerId, availability) => {
     const { rows } = await pool.query(query, [availability, workerId]);
     return rows[0];
 };
+
+export const findById = async (id) => {
+    const query = `
+    SELECT *
+    FROM workers
+    WHERE id = $1
+  `;
+
+    const { rows } = await pool.query(query, [id]);
+    return rows[0];
+};

@@ -15,3 +15,13 @@ export const createClient = async (data) => {
 
     return client;
 };
+
+export const getClientById = async (id) => {
+    const client = await clientRepository.findById(id);
+
+    if (!client) {
+        throw new AppError("Client not found", 404);
+    }
+
+    return client;
+};

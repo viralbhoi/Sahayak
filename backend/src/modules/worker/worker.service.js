@@ -34,3 +34,13 @@ export const updateAvailability = async (workerId, availability) => {
 
     return worker;
 };
+
+export const getWorkerById = async (id) => {
+    const worker = await workerRepository.findById(id);
+
+    if (!worker) {
+        throw new AppError("Worker not found", 404);
+    }
+
+    return worker;
+};

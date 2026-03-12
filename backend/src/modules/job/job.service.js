@@ -56,3 +56,7 @@ export const getMatches = async (jobId, user) => {
 
     return await jobRepository.getMatches(jobId);
 };
+
+export const getMyJobs = async (clientId) => {
+    return await jobRepository.findByClientId(clientId);
+};

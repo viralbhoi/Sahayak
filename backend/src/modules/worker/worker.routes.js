@@ -5,13 +5,23 @@ import { createWorkerSchema, availabilitySchema } from "./worker.schema.js";
 import { protect } from "../../middlewares/auth.middleware.js";
 import { allowRoles } from "../../middlewares/role.middleware.js";
 import AppError from "../../utils/AppError.js";
+import { idParamSchema } from "../common/idParam.schema.js";
 
 const router = express.Router();
 
-// Create worker
+// Create worker (public)
 router.post("/", validate(createWorkerSchema), workerController.createWorker);
 
-// Update availability
+// Get worker profile (protected)
+router.get(
+    "/:id",
+    protect,
+    allowRoles("worker"),
+    validate(idParamSchema),
+    workerController.getWorkerById,
+);
+
+// Update availability (protected + ownership)
 router.patch(
     "/:id/availability",
     protect,

@@ -17,7 +17,10 @@ router.post(
     jobController.createJob,
 );
 
-// Get matches for a job
+// Get my jobs ⭐ NEW
+router.get("/my-jobs", protect, allowRoles("client"), jobController.getMyJobs);
+
+// Get matches
 router.get(
     "/:id/matches",
     protect,

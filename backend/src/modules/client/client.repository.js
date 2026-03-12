@@ -12,3 +12,14 @@ export const createClient = async ({ name, phone, city }) => {
 
     return rows[0];
 };
+
+export const findById = async (id) => {
+    const query = `
+    SELECT *
+    FROM clients
+    WHERE id = $1
+  `;
+
+    const { rows } = await pool.query(query, [id]);
+    return rows[0];
+};

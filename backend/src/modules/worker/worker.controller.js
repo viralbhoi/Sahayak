@@ -14,3 +14,9 @@ export const updateAvailability = asyncHandler(async (req, res, next) => {
     const worker = await workerService.updateAvailability(id, availability);
     success(res, worker, 200);
 });
+
+export const getWorkerById = asyncHandler(async (req, res) => {
+    const worker = await workerService.getWorkerById(Number(req.params.id));
+
+    success(res, worker);
+});

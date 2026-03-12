@@ -6,3 +6,9 @@ export const createClient = asyncHandler(async (req, res) => {
     const client = await clientService.createClient(req.body);
     success(res, client, 201);
 });
+
+export const getClientById = asyncHandler(async (req, res) => {
+    const client = await clientService.getClientById(Number(req.params.id));
+
+    success(res, client);
+});
