@@ -83,3 +83,14 @@ CREATE TABLE otp_codes (
 
 ALTER TABLE otp_codes
 ADD COLUMN attempts INT DEFAULT 0;
+
+CREATE TABLE job_assignments (
+    id SERIAL PRIMARY KEY,
+    job_id INT REFERENCES job_requests(id),
+    worker_id INT REFERENCES workers(id),
+    status VARCHAR(30) DEFAULT 'accepted',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE job_requests
+ADD COLUMN status VARCHAR(30) DEFAULT 'pending';

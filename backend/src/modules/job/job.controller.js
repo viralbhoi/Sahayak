@@ -24,3 +24,18 @@ export const getWorkerFeed = asyncHandler(async (req, res) => {
     const jobs = await jobService.getWorkerFeed(req.user.id);
     success(res, jobs);
 });
+
+export const acceptJob = asyncHandler(async (req, res) => {
+    await jobService.acceptJob(Number(req.params.id), req.user.id);
+    success(res, { message: "Job accepted" });
+});
+
+export const startJob = asyncHandler(async (req, res) => {
+    await jobService.startJob(Number(req.params.id), req.user.id);
+    success(res, { message: "Job started" });
+});
+
+export const completeJob = asyncHandler(async (req, res) => {
+    await jobService.completeJob(Number(req.params.id), req.user.id);
+    success(res, { message: "Job completed" });
+});

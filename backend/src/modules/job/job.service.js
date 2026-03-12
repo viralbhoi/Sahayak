@@ -64,3 +64,15 @@ export const getMyJobs = async (clientId) => {
 export const getWorkerFeed = async (workerId) => {
     return await jobRepository.findJobsForWorker(workerId);
 };
+
+export const acceptJob = async (jobId, workerId) => {
+    await jobRepository.assignJob(jobId, workerId);
+};
+
+export const startJob = async (jobId, workerId) => {
+    await jobRepository.updateJobStatus(jobId, "in_progress");
+};
+
+export const completeJob = async (jobId, workerId) => {
+    await jobRepository.updateJobStatus(jobId, "completed");
+};

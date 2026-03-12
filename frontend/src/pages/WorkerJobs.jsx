@@ -16,6 +16,11 @@ function WorkerJobs() {
         fetchJobs();
     }, []);
 
+    const acceptJob = async (id) => {
+        await api.post(`/jobs/${id}/accept`);
+        fetchJobs();
+    };
+
     return (
         <Layout>
             <Card>
@@ -46,6 +51,13 @@ function WorkerJobs() {
                             </p>
 
                             <Button className="mt-3">Contact Client</Button>
+
+                            <Button
+                                className="mt-3"
+                                onClick={() => acceptJob(job.id)}
+                            >
+                                Accept Job
+                            </Button>
                         </div>
                     ))}
                 </div>

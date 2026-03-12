@@ -36,4 +36,28 @@ router.get(
     jobController.getWorkerFeed,
 );
 
+router.post(
+    "/:id/accept",
+    protect,
+    allowRoles("worker"),
+    validate(idParamSchema),
+    jobController.acceptJob,
+);
+
+router.patch(
+    "/:id/start",
+    protect,
+    allowRoles("worker"),
+    validate(idParamSchema),
+    jobController.startJob,
+);
+
+router.patch(
+    "/:id/complete",
+    protect,
+    allowRoles("worker"),
+    validate(idParamSchema),
+    jobController.completeJob,
+);
+
 export default router;

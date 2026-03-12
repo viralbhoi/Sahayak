@@ -69,3 +69,33 @@ export const findJobsForWorker = async (workerId) => {
     const { rows } = await pool.query(query, [workerId]);
     return rows;
 };
+
+export const assignJob = async (jobId, workerId) => {
+    await pool.query(
+        `
+    INSERT INTO job_assignments (job_id, worker_id)
+    VALUES ($1,$2)
+  `,
+        [jobId, workerId],
+    );
+
+    await pool.query(
+        `
+    UPDATE job_requests
+    SET status = 'accepted'
+    WHERE id = $1
+  `,
+        [jobId],
+    );
+};
+
+export const updateJobStatus = async (jobId, status) => {
+    await pool.query(
+        `
+    UPDATE job_requests
+    SET status = $2
+    WHERE id = $1
+  `,
+        [jobId, status],
+    );
+};
