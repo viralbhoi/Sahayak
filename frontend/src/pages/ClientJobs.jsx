@@ -16,6 +16,12 @@ function ClientJobs() {
 
     useEffect(() => {
         fetchJobs();
+
+        const interval = setInterval(() => {
+            fetchJobs();
+        }, 5000);
+
+        return () => clearInterval(interval);
     }, []);
 
     const openMatches = (jobId) => {
@@ -59,6 +65,10 @@ function ClientJobs() {
                             >
                                 View Matches
                             </Button>
+
+                            <p>
+                                <strong>Status:</strong> {job.status}
+                            </p>
                         </div>
                     ))}
                 </div>

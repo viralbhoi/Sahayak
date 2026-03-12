@@ -71,21 +71,26 @@ export const findJobsForWorker = async (workerId) => {
 };
 
 export const assignJob = async (jobId, workerId) => {
+    const { rowCount } = await pool.query(
+        `
+    UPDATE job_requests
+    SET status = 'accepted'
+    WHERE id = $1
+      AND status = 'pending'
+  `,
+        [jobId],
+    );
+
+    if (rowCount === 0) {
+        throw new AppError("Job already accepted", 400);
+    }
+
     await pool.query(
         `
     INSERT INTO job_assignments (job_id, worker_id)
     VALUES ($1,$2)
   `,
         [jobId, workerId],
-    );
-
-    await pool.query(
-        `
-    UPDATE job_requests
-    SET status = 'accepted'
-    WHERE id = $1
-  `,
-        [jobId],
     );
 };
 

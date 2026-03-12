@@ -14,6 +14,12 @@ function WorkerJobs() {
 
     useEffect(() => {
         fetchJobs();
+
+        const interval = setInterval(() => {
+            fetchJobs();
+        }, 5000);
+
+        return () => clearInterval(interval);
     }, []);
 
     const acceptJob = async (id) => {
