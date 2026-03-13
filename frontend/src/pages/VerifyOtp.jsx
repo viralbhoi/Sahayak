@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import api from "../api/api";
 import Layout from "../components/Layout";
 import Card from "../components/Card";
@@ -8,9 +9,15 @@ import Button from "../components/Button";
 import { getUserFromToken } from "../utils/auth";
 
 function VerifyOtp() {
-    const [phone, setPhone] = useState("");
     const [otp, setOtp] = useState("");
     const navigate = useNavigate();
+
+    const location = useLocation();
+    const phone = location.state?.phone || "";
+
+    if (!phone) {
+        navigate("/login");
+    }
 
     const handleVerify = async () => {
         const res = await api.post("/auth/verify-otp", {
@@ -42,10 +49,7 @@ function VerifyOtp() {
                 </h2>
 
                 <div className="space-y-4">
-                    <Input
-                        placeholder="Phone"
-                        onChange={(e) => setPhone(e.target.value)}
-                    />
+                    <Input value={phone} />
 
                     <Input
                         placeholder="OTP"

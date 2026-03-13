@@ -11,12 +11,16 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import WorkerDashboard from "./pages/WorkerDashboard";
 import ClientJobs from "./pages/ClientJobs";
 import WorkerJobs from "./pages/WorkerJobs";
+import Landing from "./pages/Landing";
+import Unauthorized from "./pages/Unauthorized";
+import NotFound from "./pages/NotFound";
 
 function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Login />} />
+                <Route path="/" element={<Landing />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="/verify" element={<VerifyOtp />} />
                 <Route path="/worker/register" element={<WorkerRegister />} />
                 <Route path="/client/register" element={<ClientRegister />} />
@@ -80,6 +84,9 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
+
+                <Route path="/unauthorized" element={<Unauthorized />} />
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
     );

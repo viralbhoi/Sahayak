@@ -13,7 +13,7 @@ function Login() {
     const handleSubmit = async () => {
         await api.post("/auth/request-otp", { phone });
         alert("OTP sent to your phone");
-        navigate("/verify");
+        navigate("/verify", { state: { phone } });
     };
 
     return (
