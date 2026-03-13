@@ -1,31 +1,29 @@
-import { useNavigate } from "react-router-dom";
-import Layout from "../components/Layout";
-import Card from "../components/Card";
-import Button from "../components/Button";
+import DashboardLayout from "../components/DashboardLayout";
 
 function ClientDashboard() {
-    const navigate = useNavigate();
-
     return (
-        <Layout>
-            <Card>
-                <h2 className="text-2xl font-semibold text-primary text-center mb-6">
-                    Client Dashboard
-                </h2>
+        <DashboardLayout>
+            <h1 className="text-3xl font-bold text-primary mb-6">
+                Client Dashboard
+            </h1>
 
-                <div className="space-y-4">
-                    <Button onClick={() => navigate("/jobs/create")}>
-                        Create Job
-                    </Button>
-
-                    <Button onClick={() => navigate("/jobs/matches")}>
-                        View Matches
-                    </Button>
-
-                    <Button onClick={() => navigate("/jobs")}>My Jobs</Button>
+            <div className="grid grid-cols-3 gap-6">
+                <div className="bg-white p-6 rounded-xl shadow">
+                    <p className="text-gray-500">Total Jobs</p>
+                    <h2 className="text-2xl font-bold">--</h2>
                 </div>
-            </Card>
-        </Layout>
+
+                <div className="bg-white p-6 rounded-xl shadow">
+                    <p className="text-gray-500">Active Jobs</p>
+                    <h2 className="text-2xl font-bold">--</h2>
+                </div>
+
+                <div className="bg-white p-6 rounded-xl shadow">
+                    <p className="text-gray-500">Completed Jobs</p>
+                    <h2 className="text-2xl font-bold">--</h2>
+                </div>
+            </div>
+        </DashboardLayout>
     );
 }
 

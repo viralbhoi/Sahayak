@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import Layout from "../components/Layout";
 import Card from "../components/Card";
@@ -7,10 +8,12 @@ import Button from "../components/Button";
 
 function Login() {
     const [phone, setPhone] = useState("");
+    const navigate = useNavigate();
 
     const handleSubmit = async () => {
         await api.post("/auth/request-otp", { phone });
         alert("OTP sent to your phone");
+        navigate("/verify");
     };
 
     return (

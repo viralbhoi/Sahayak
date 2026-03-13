@@ -1,6 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 
-export const getUser = () => {
+export const getUserFromToken = () => {
     const token = localStorage.getItem("token");
 
     if (!token) return null;

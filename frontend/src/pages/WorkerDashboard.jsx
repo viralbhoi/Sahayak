@@ -1,67 +1,18 @@
-import { useEffect, useState } from "react";
-import api from "../api/api";
-import Layout from "../components/Layout";
-import Card from "../components/Card";
-import Button from "../components/Button";
+import DashboardLayout from "../components/DashboardLayout";
 
 function WorkerDashboard() {
-    const [worker, setWorker] = useState(null);
-    const workerId = localStorage.getItem("userId");
-
-    const fetchWorker = async () => {
-        const res = await api.get(`/workers/${workerId}`);
-        setWorker(res.data.data);
-    };
-
-    useEffect(() => {
-        fetchWorker();
-    }, []);
-
-    const toggleAvailability = async () => {
-        await api.patch(`/workers/${workerId}/availability`, {
-            availability: !worker.availability,
-        });
-
-        fetchWorker();
-    };
-
-    if (!worker) return <Layout>Loading...</Layout>;
-
     return (
-        <Layout>
-            <Card>
-                <h2 className="text-2xl text-primary font-semibold mb-6 text-center">
-                    Worker Dashboard
-                </h2>
+        <DashboardLayout>
+            <h1 className="text-3xl font-bold text-primary mb-6">
+                Worker Dashboard
+            </h1>
 
-                <div className="space-y-2">
-                    <p>
-                        <strong>Name:</strong> {worker.name}
-                    </p>
-                    <p>
-                        <strong>Phone:</strong> {worker.phone}
-                    </p>
-                    <p>
-                        <strong>City:</strong> {worker.city}
-                    </p>
-                    <p>
-                        <strong>Area:</strong> {worker.area}
-                    </p>
-                    <p>
-                        <strong>Status:</strong>{" "}
-                        {worker.availability ? "Available" : "Busy"}
-                    </p>
-                </div>
-
-                <Button className="mt-6" onClick={toggleAvailability}>
-                    Toggle Availability
-                </Button>
-
-                <Button onClick={() => navigate("/worker/jobs")}>
-                    View Jobs
-                </Button>
-            </Card>
-        </Layout>
+            <div className="bg-white p-6 rounded-xl shadow">
+                <p className="text-gray-500">
+                    Welcome! Check available jobs from sidebar.
+                </p>
+            </div>
+        </DashboardLayout>
     );
 }
 

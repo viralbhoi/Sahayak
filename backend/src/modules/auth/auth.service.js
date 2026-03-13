@@ -31,7 +31,7 @@ export const requestOtp = async (phone) => {
 };
 
 export const verifyOtp = async (phone, otp) => {
-    const record = await authRepository.findValidOtp(phone, otp);
+    const record = await authRepository.findLatestOtp(phone, otp);
 
     if (!record) {
         throw new AppError("Invalid or expired OTP", 400);

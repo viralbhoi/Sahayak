@@ -1,6 +1,6 @@
 import { useState } from "react";
 import api from "../api/api";
-import Layout from "../components/Layout";
+import DashboardLayout from "../components/DashboardLayout";
 import Card from "../components/Card";
 import Input from "../components/Input";
 import Button from "../components/Button";
@@ -25,7 +25,7 @@ function CreateJob() {
     };
 
     return (
-        <Layout>
+        <DashboardLayout>
             <Card>
                 <h2 className="text-2xl font-semibold text-primary text-center mb-6">
                     Create Job
@@ -59,7 +59,7 @@ function CreateJob() {
                     <Button onClick={handleSubmit}>Post Job</Button>
                 </div>
             </Card>
-        </Layout>
+        </DashboardLayout>
     );
 }
 

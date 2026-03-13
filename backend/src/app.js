@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import routes from "./routes/index.js";
 import logger from "./middlewares/logger.middleware.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
@@ -7,6 +8,9 @@ import { errorHandler } from "./middlewares/error.middleware.js";
 dotenv.config();
 
 const app = express();
+
+app.use(cors());
+
 app.use(express.json());
 
 app.use(logger);
