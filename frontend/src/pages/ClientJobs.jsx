@@ -85,11 +85,37 @@ function ClientJobs() {
                                     <h3 className="text-xl font-bold text-stone-900 capitalize">
                                         {job.skill}
                                     </h3>
+
                                     <span
                                         className={`px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full border ${getStatusStyle(job.status)}`}
                                     >
                                         {job.status || "Open"}
                                     </span>
+
+                                    {/* Inside ClientJobs.jsx next to the status badge */}
+                                    {job.status === "completed" && (
+                                        <button
+                                            onClick={async () => {
+                                                const rating = prompt(
+                                                    "Rate this worker out of 5:",
+                                                );
+                                                if (rating && rating <= 5) {
+                                                    await api.post(
+                                                        `/jobs/${job.id}/rate`,
+                                                        {
+                                                            rating: Number(
+                                                                rating,
+                                                            ),
+                                                        },
+                                                    );
+                                                    alert("Rating submitted!");
+                                                }
+                                            }}
+                                            className="ml-4 text-xs bg-amber-100 text-amber-800 px-3 py-1 rounded-full font-bold hover:bg-amber-200"
+                                        >
+                                            ⭐ Rate Worker
+                                        </button>
+                                    )}
                                 </div>
                                 <div className="flex items-center gap-4 text-sm text-stone-500 font-medium">
                                     <span className="flex items-center gap-1.5">

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../components/DashboardLayout";
 import Card from "../components/Card";
 import Button from "../components/Button";
+import api from "../api/api";
 import {
     Search,
     MapPin,
@@ -22,23 +23,13 @@ function WorkerDashboard() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Simulating an API call to fetch worker stats
         const fetchWorkerStats = async () => {
             try {
-                // TODO: Replace with your actual backend endpoint
-                // const res = await api.get("/dashboard/worker/stats");
-                // setStats(res.data.data);
-
-                setTimeout(() => {
-                    setStats({
-                        rating: "4.8",
-                        completed: 24,
-                        area: "Surat Central",
-                    });
-                    setIsLoading(false);
-                }, 800);
+                const res = await api.get("/dashboard/worker/stats");
+                setStats(res.data.data);
             } catch (error) {
                 console.error("Failed to fetch worker stats", error);
+            } finally {
                 setIsLoading(false);
             }
         };

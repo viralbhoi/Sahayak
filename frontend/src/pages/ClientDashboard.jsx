@@ -25,17 +25,11 @@ function ClientDashboard() {
     useEffect(() => {
         const fetchDashboardStats = async () => {
             try {
-                // TODO: Replace with your actual backend endpoint once created
-                // const res = await api.get("/dashboard/client/stats");
-                // setStats(res.data.data);
-
-                // Simulating an API delay for the sleek loading state
-                setTimeout(() => {
-                    setStats({ total: 12, active: 3, completed: 9 });
-                    setIsLoading(false);
-                }, 800);
+                const res = await api.get("/dashboard/client/stats");
+                setStats(res.data.data);
             } catch (error) {
                 console.error("Failed to fetch dashboard stats", error);
+            } finally {
                 setIsLoading(false);
             }
         };
