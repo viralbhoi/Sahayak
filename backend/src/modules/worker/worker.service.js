@@ -54,3 +54,13 @@ export const getWorkerById = async (id) => {
 
     return worker;
 };
+
+export const updateSkills = async (workerId, skills) => {
+    if (!Array.isArray(skills))
+        throw new AppError("Skills must be an array", 400);
+
+    const normalizedSkills = skills
+        .map((s) => String(s).trim().toLowerCase())
+        .filter(Boolean);
+    return await workerRepository.updateSkills(workerId, normalizedSkills);
+};

@@ -42,4 +42,21 @@ router.patch(
     workerController.updateAvailability,
 );
 
+// Update skills
+router.patch(
+    "/:id/skills",
+    protect,
+    allowRoles("worker"),
+    validate(idParamSchema),
+    (req, res, next) => {
+        if (req.user.id !== Number(req.params.id)) {
+            return next(
+                new AppError("You can update only your own profile", 403),
+            );
+        }
+        next();
+    },
+    workerController.updateSkills,
+);
+
 export default router;

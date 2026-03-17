@@ -20,3 +20,11 @@ export const getWorkerById = asyncHandler(async (req, res) => {
 
     success(res, worker);
 });
+
+export const updateSkills = asyncHandler(async (req, res) => {
+    const worker = await workerService.updateSkills(
+        Number(req.params.id),
+        req.body.skills,
+    );
+    success(res, worker);
+});
