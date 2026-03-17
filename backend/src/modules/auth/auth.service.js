@@ -31,9 +31,9 @@ export const requestOtp = async (phone) => {
 };
 
 export const verifyOtp = async (phone, otp) => {
-    const record = await authRepository.findLatestOtp(phone, otp);
+    const record = await authRepository.findLatestOtp(phone);
 
-    if (!record) {
+    if (!record || record.otp !== String(otp)) {
         throw new AppError("Invalid or expired OTP", 400);
     }
 
@@ -43,6 +43,5 @@ export const verifyOtp = async (phone, otp) => {
         id: user.id,
         role: user.role,
     });
-
     return token;
 };

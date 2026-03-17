@@ -4,29 +4,28 @@ import pool from "../../config/db.js";
 import AppError from "../../utils/AppError.js";
 
 export const createJob = async (data, clientId) => {
-    const job = await jobRepository.createJob(data, clientId);
+    const normalizedData = {
+        ...data,
+        skill: data.skill.toLowerCase().trim(),
+    };
 
-    // run matching engine
+    const job = await jobRepository.createJob(normalizedData, clientId);
     await matchingService.runMatching(job.id);
 
-    return {
-        jobId: job.id,
-    };
+    return { jobId: job.id };
 };
 
 export const getMatches = async (jobId, user) => {
     const job = await jobRepository.findJobById(jobId);
-
     if (!job) {
         throw new AppError("Job not found", 404);
     }
 
-    // Ownership check (only for clients)
     if (user.role === "client" && job.client_id !== user.id) {
         throw new AppError("You can access only your own jobs", 403);
     }
 
-    return await jobRepository.getMatches(jobId);
+    return await jobRepository.getMatchesByJob(jobId);
 };
 
 export const getMyJobs = async (clientId) => {

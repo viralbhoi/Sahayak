@@ -1,4 +1,5 @@
 import pool from "../../config/db.js";
+import AppError from "../../utils/AppError.js";
 
 export const createJob = async (data, clientId) => {
     const { skill, city, area, description } = data;
@@ -36,10 +37,10 @@ export const getMatchesByJob = async (jobId) => {
 
 export const findJobById = async (jobId) => {
     const query = `
-    SELECT id, client_id
-    FROM job_requests
+    SELECT * FROM job_requests
     WHERE id = $1
   `;
+
     const { rows } = await pool.query(query, [jobId]);
     return rows[0];
 };
