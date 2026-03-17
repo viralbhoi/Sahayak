@@ -47,3 +47,7 @@ export const startJob = async (jobId, workerId) => {
 export const completeJob = async (jobId, workerId) => {
     await jobRepository.updateJobStatus(jobId, "completed");
 };
+
+export const getWorkerAssignments = async (workerId) => {
+    return await jobRepository.getWorkerAssignments(workerId);
+};

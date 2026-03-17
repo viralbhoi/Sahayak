@@ -76,10 +76,15 @@ function Matches() {
                                 {worker.name}
                             </h3>
 
-                            {/* Faux Rating for visual trust (you can connect this to DB later) */}
+                            
                             <div className="flex items-center gap-1 text-emerald-600 mb-3">
                                 <Star className="w-4 h-4 fill-emerald-600" />
-                                <span className="text-sm font-bold">4.9</span>
+                                <span className="text-sm font-bold">
+                                    {/* Show the real rating, or "New" if they have no ratings yet (0.0) */}
+                                    {worker.rating > 0
+                                        ? Number(worker.rating).toFixed(1)
+                                        : "New"}
+                                </span>
                             </div>
 
                             <p className="flex items-center gap-1.5 text-stone-500 text-sm mb-6">

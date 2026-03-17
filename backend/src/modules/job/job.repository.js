@@ -24,12 +24,12 @@ export const createJob = async (data, clientId) => {
 
 export const getMatchesByJob = async (jobId) => {
     const query = `
-    SELECT w.id, w.name, w.phone, w.city
+    SELECT w.id, w.name, w.phone, w.city, w.rating
     FROM matches m
     JOIN workers w ON w.id = m.worker_id
     WHERE m.job_id = $1
     ORDER BY m.rank;
-  `;
+    `;
 
     const { rows } = await pool.query(query, [jobId]);
     return rows;
@@ -125,4 +125,20 @@ export const updateJobStatus = async (jobId, status) => {
   `,
         [jobId, status],
     );
+};
+
+export const getWorkerAssignments = async (workerId) => {
+    const query = `
+        SELECT 
+            j.id, j.skill, j.city, j.area, j.description, j.status, 
+            c.name AS client_name, c.phone AS client_phone,
+            ja.created_at as accepted_at
+        FROM job_assignments ja
+        JOIN job_requests j ON ja.job_id = j.id
+        JOIN clients c ON j.client_id = c.id
+        WHERE ja.worker_id = $1
+        ORDER BY ja.created_at DESC;
+    `;
+    const { rows } = await pool.query(query, [workerId]);
+    return rows;
 };

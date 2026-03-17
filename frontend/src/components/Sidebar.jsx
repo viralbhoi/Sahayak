@@ -77,6 +77,12 @@ function Sidebar() {
                         >
                             <Search className="w-5 h-5" /> Find Work
                         </button>
+                        <button
+                            onClick={() => navigate("/worker/tasks")}
+                            className={navItemClass("/worker/tasks")}
+                        >
+                            <CheckCircle className="w-5 h-5" /> My Tasks
+                        </button>
                     </>
                 )}
             </div>

@@ -92,7 +92,6 @@ function ClientJobs() {
                                         {job.status || "Open"}
                                     </span>
 
-                                    {/* Inside ClientJobs.jsx next to the status badge */}
                                     {job.status === "completed" && (
                                         <button
                                             onClick={async () => {
@@ -113,7 +112,7 @@ function ClientJobs() {
                                             }}
                                             className="ml-4 text-xs bg-amber-100 text-amber-800 px-3 py-1 rounded-full font-bold hover:bg-amber-200"
                                         >
-                                            ⭐ Rate Worker
+                                            Rate Worker
                                         </button>
                                     )}
                                 </div>

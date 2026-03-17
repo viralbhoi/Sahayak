@@ -39,3 +39,8 @@ export const completeJob = asyncHandler(async (req, res) => {
     await jobService.completeJob(Number(req.params.id), req.user.id);
     success(res, { message: "Job completed" });
 });
+
+export const getWorkerAssignments = asyncHandler(async (req, res) => {
+    const jobs = await jobService.getWorkerAssignments(req.user.id);
+    success(res, jobs);
+});

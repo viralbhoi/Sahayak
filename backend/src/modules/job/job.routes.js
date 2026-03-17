@@ -60,4 +60,11 @@ router.patch(
     jobController.completeJob,
 );
 
+router.get(
+    "/worker-assignments",
+    protect,
+    allowRoles("worker"),
+    jobController.getWorkerAssignments,
+);
+
 export default router;

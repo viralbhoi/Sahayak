@@ -14,6 +14,7 @@ import WorkerJobs from "./pages/WorkerJobs";
 import Landing from "./pages/Landing";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
+import WorkerTasks from "./pages/WorkerTasks";
 
 function App() {
     return (
@@ -81,6 +82,15 @@ function App() {
                     element={
                         <ProtectedRoute role="worker">
                             <WorkerJobs />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/worker/tasks"
+                    element={
+                        <ProtectedRoute role="worker">
+                            <WorkerTasks />
                         </ProtectedRoute>
                     }
                 />
