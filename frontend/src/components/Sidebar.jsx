@@ -6,6 +6,7 @@ import {
     PlusCircle,
     Search,
     Zap,
+    CheckCircle,
 } from "lucide-react";
 
 function Sidebar() {
