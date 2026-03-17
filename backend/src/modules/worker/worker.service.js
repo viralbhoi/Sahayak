@@ -12,8 +12,14 @@ export const createWorker = async (data) => {
         throw new AppError("At least one skill is required", 400);
     }
 
-    const worker = await workerRepository.createWorker(data);
-    await workerRepository.assignSkills(worker.id, skills);
+    const normalizedSkills = skills
+        .map((s) => String(s).trim().toLowerCase())
+        .filter(Boolean);
+
+    const worker = await workerRepository.createWorker({
+        ...data,
+        skills: normalizedSkills,
+    });
 
     return worker;
 };
@@ -21,6 +27,10 @@ export const createWorker = async (data) => {
 export const updateAvailability = async (workerId, availability) => {
     if (availability === undefined) {
         throw new AppError("Availability is required", 400);
+    }
+
+    if (typeof availability !== "boolean") {
+        throw new AppError("Availability must be boolean", 400);
     }
 
     const worker = await workerRepository.updateAvailability(

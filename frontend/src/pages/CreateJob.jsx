@@ -13,6 +13,7 @@ function CreateJob() {
 
     const handleSubmit = async () => {
         const res = await api.post("/jobs", {
+            
             skill,
             city,
             area,

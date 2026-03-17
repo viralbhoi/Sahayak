@@ -4,7 +4,6 @@ import clientRoutes from "../modules/client/client.routes.js";
 import jobRoutes from "../modules/job/job.routes.js";
 import authRoutes from "../modules/auth/auth.routes.js";
 
-
 const router = express.Router();
 
 router.use("/workers", workerRoutes);

@@ -3,13 +3,22 @@ import Sidebar from "./Sidebar";
 
 function DashboardLayout({ children }) {
     return (
-        <div className="h-screen flex bg-background">
-            <Sidebar />
+        <div className="h-screen flex bg-stone-50 font-sans overflow-hidden selection:bg-amber-100 selection:text-amber-900">
+            {/* Sidebar Container */}
+            <div className="hidden md:block h-full shadow-sm z-20">
+                <Sidebar />
+            </div>
 
-            <div className="flex-1 flex flex-col">
+            {/* Main Content Column */}
+            <div className="flex-1 flex flex-col min-w-0">
                 <Navbar />
 
-                <div className="p-6 overflow-y-auto flex-1">{children}</div>
+                {/* Scrollable Content Area */}
+                <div className="flex-1 overflow-y-auto p-4 md:p-8">
+                    <div className="max-w-6xl mx-auto animate-in fade-in duration-500">
+                        {children}
+                    </div>
+                </div>
             </div>
         </div>
     );

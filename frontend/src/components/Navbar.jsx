@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Zap, LogOut } from "lucide-react";
 
 function Navbar() {
     const navigate = useNavigate();
@@ -10,30 +11,31 @@ function Navbar() {
     };
 
     const goDashboard = () => {
-        if (role === "worker") {
-            navigate("/dashboard/worker");
-        } else if (role === "client") {
-            navigate("/dashboard/client");
-        } else {
-            navigate("/");
-        }
+        if (role === "worker") navigate("/dashboard/worker");
+        else if (role === "client") navigate("/dashboard/client");
+        else navigate("/");
     };
 
     return (
-        <nav className="bg-primary text-white px-6 py-4 flex justify-between items-center shadow">
-            <h1
-                className="text-xl font-semibold cursor-pointer"
+        <nav className="sticky top-0 z-50 flex justify-between items-center bg-white/80 backdrop-blur-md border-b border-stone-200 px-6 py-4 shadow-sm">
+            {/* Brand / Logo */}
+            <div
+                className="flex items-center gap-2 cursor-pointer group"
                 onClick={goDashboard}
             >
-                Sahayak
-            </h1>
+                <h1 className="text-xl font-extrabold text-stone-900 tracking-tight">
+                    Sahayak
+                </h1>
+            </div>
 
+            {/* Actions */}
             {role && (
                 <button
                     onClick={logout}
-                    className="bg-secondary px-4 py-1 rounded"
+                    className="flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-red-600 bg-stone-50 hover:bg-red-50 border border-stone-200 hover:border-red-200 px-4 py-2 rounded-full transition-all duration-300"
                 >
-                    Logout
+                    <LogOut className="w-4 h-4" />
+                    <span className="hidden sm:inline">Logout</span>
                 </button>
             )}
         </nav>

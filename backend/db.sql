@@ -94,3 +94,18 @@ CREATE TABLE job_assignments (
 
 ALTER TABLE job_requests
 ADD COLUMN status VARCHAR(30) DEFAULT 'pending';
+
+ALTER TABLE job_requests
+ADD COLUMN skill VARCHAR(100);
+
+ALTER TABLE job_requests
+ADD COLUMN description TEXT;
+
+ALTER TABLE job_requests
+DROP COLUMN skill_id;
+
+ALTER TABLE job_requests
+DROP COLUMN urgency;
+
+ALTER TABLE workers
+ADD COLUMN skills TEXT[];

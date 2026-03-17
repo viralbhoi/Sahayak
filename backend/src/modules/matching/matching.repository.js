@@ -7,9 +7,8 @@ export const findEligibleWorkers = async (client, job) => {
       w.area,
       MAX(m.created_at) AS last_assigned_at
     FROM workers w
-    JOIN worker_skills ws ON ws.worker_id = w.id
     LEFT JOIN matches m ON m.worker_id = w.id
-    WHERE ws.skill_id = $1
+    WHERE w.skills @> ARRAY[$1]
       AND w.city = $2
       AND w.availability = TRUE
     GROUP BY w.id
@@ -19,7 +18,7 @@ export const findEligibleWorkers = async (client, job) => {
     LIMIT 5;
   `;
 
-    const values = [job.skill_id, job.city, job.area];
+    const values = [job.skill, job.city, job.area];
     const { rows } = await client.query(query, values);
 
     return rows;

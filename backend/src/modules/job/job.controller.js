@@ -3,8 +3,8 @@ import asyncHandler from "../../utils/asyncHandler.js";
 import { success } from "../../utils/apiResponse.js";
 
 export const createJob = asyncHandler(async (req, res) => {
-    const job = await jobService.createJob(req.body);
-    success;
+    const result = await jobService.createJob(req.body, req.user.id);
+    success(res, result);
 });
 
 export const getMatches = asyncHandler(async (req, res) => {
