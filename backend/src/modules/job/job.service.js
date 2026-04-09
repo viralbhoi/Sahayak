@@ -51,3 +51,37 @@ export const completeJob = async (jobId, workerId) => {
 export const getWorkerAssignments = async (workerId) => {
     return await jobRepository.getWorkerAssignments(workerId);
 };
+
+export const rateJob = async (jobId, clientId, rating, review) => {
+    const job = await jobRepository.findJobById(jobId);
+
+    if (!job) {
+        throw new AppError("Job not found", 404);
+    }
+
+    if (job.client_id !== clientId) {
+        throw new AppError("Unauthorized", 403);
+    }
+
+    if (job.status !== "completed") {
+        throw new AppError("Job not completed yet", 400);
+    }
+
+    const workerId = await jobRepository.getAssignedWorker(jobId);
+
+    if (!workerId) {
+        throw new AppError("No worker assigned", 400);
+    }
+
+    await jobRepository.createRating({
+        jobId,
+        clientId,
+        workerId,
+        rating,
+        review,
+    });
+
+    await jobRepository.updateWorkerRating(workerId);
+
+    return { message: "Rating submitted" };
+};

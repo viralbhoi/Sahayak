@@ -9,7 +9,6 @@ import AppError from "../../utils/AppError.js";
 
 const router = express.Router();
 
-// Register client (public)
 router.post("/", validate(createClientSchema), clientController.createClient);
 
 // Get client profile (protected + ownership)

@@ -47,10 +47,11 @@ export const findJobById = async (jobId) => {
 
 export const findByClientId = async (clientId) => {
     const query = `
-    SELECT *
-    FROM job_requests
-    WHERE client_id = $1
-    ORDER BY created_at DESC
+    SELECT j.*, r.rating
+    FROM job_requests j
+    LEFT JOIN ratings r ON r.job_id = j.id
+    WHERE j.client_id = $1
+    ORDER BY j.created_at DESC
   `;
 
     const { rows } = await pool.query(query, [clientId]);
@@ -141,4 +142,55 @@ export const getWorkerAssignments = async (workerId) => {
     `;
     const { rows } = await pool.query(query, [workerId]);
     return rows;
+};
+
+export const getAssignedWorker = async (jobId) => {
+    const { rows } = await pool.query(
+        `
+    SELECT worker_id
+    FROM job_assignments
+    WHERE job_id = $1
+  `,
+        [jobId],
+    );
+
+    return rows[0]?.worker_id;
+};
+
+export const createRating = async ({
+    jobId,
+    clientId,
+    workerId,
+    rating,
+    review,
+}) => {
+    await pool.query(
+        `
+    INSERT INTO ratings (job_id, worker_id, client_id, rating, review)
+    VALUES ($1,$2,$3,$4,$5)
+  `,
+        [jobId, workerId, clientId, rating, review],
+    );
+};
+
+export const updateWorkerRating = async (workerId) => {
+    const { rows } = await pool.query(
+        `
+    SELECT AVG(rating)::numeric(2,1) as avg_rating
+    FROM ratings
+    WHERE worker_id = $1
+  `,
+        [workerId],
+    );
+
+    const avg = rows[0].avg_rating || 0;
+
+    await pool.query(
+        `
+    UPDATE workers
+    SET rating = $2
+    WHERE id = $1
+  `,
+        [workerId, avg],
+    );
 };

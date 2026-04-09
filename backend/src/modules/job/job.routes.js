@@ -67,4 +67,12 @@ router.get(
     jobController.getWorkerAssignments,
 );
 
+router.post(
+    "/:id/rate",
+    protect,
+    allowRoles("client"),
+    validate(idParamSchema),
+    jobController.rateJob,
+);
+
 export default router;

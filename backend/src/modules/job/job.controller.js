@@ -44,3 +44,16 @@ export const getWorkerAssignments = asyncHandler(async (req, res) => {
     const jobs = await jobService.getWorkerAssignments(req.user.id);
     success(res, jobs);
 });
+
+export const rateJob = asyncHandler(async (req, res) => {
+    const { rating, review } = req.body;
+
+    const result = await jobService.rateJob(
+        Number(req.params.id),
+        req.user.id,
+        rating,
+        review,
+    );
+
+    success(res, result);
+});

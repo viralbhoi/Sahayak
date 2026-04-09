@@ -9,10 +9,19 @@ import {
     PlusCircle,
     Users,
 } from "lucide-react";
+import RatingModal from "../components/RatingModal";
 
 function ClientJobs() {
     const [jobs, setJobs] = useState([]);
     const navigate = useNavigate();
+    const [selectedJob, setSelectedJob] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+
+    const submitRating = async (rating) => {
+        await api.post(`/jobs/${selectedJob.id}/rate`, { rating });
+        setShowModal(false);
+        fetchJobs();
+    };
 
     const fetchJobs = async () => {
         try {
@@ -29,7 +38,6 @@ function ClientJobs() {
         return () => clearInterval(interval);
     }, []);
 
-    // Helper to style the status badge beautifully
     const getStatusStyle = (status) => {
         switch (status?.toLowerCase()) {
             case "completed":
@@ -92,29 +100,29 @@ function ClientJobs() {
                                         {job.status || "Open"}
                                     </span>
 
-                                    {job.status === "completed" && (
-                                        <button
-                                            onClick={async () => {
-                                                const rating = prompt(
-                                                    "Rate this worker out of 5:",
-                                                );
-                                                if (rating && rating <= 5) {
-                                                    await api.post(
-                                                        `/jobs/${job.id}/rate`,
-                                                        {
-                                                            rating: Number(
-                                                                rating,
-                                                            ),
-                                                        },
-                                                    );
-                                                    alert("Rating submitted!");
-                                                }
-                                            }}
-                                            className="ml-4 text-xs bg-amber-100 text-amber-800 px-3 py-1 rounded-full font-bold hover:bg-amber-200"
-                                        >
-                                            Rate Worker
-                                        </button>
+                                    {job.status === "completed" &&
+                                        !job.rating && (
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedJob(job);
+                                                    setShowModal(true);
+                                                }}
+                                                className="ml-4 text-xs bg-amber-100 text-amber-800 px-3 py-1 rounded-full font-bold hover:bg-amber-200"
+                                            >
+                                                Rate Worker
+                                            </button>
+                                        )}
+                                    {job.rating && (
+                                        <p className="mt-2 text-sm text-yellow-600 font-semibold">
+                                            ⭐ You rated: {job.rating}/5
+                                        </p>
                                     )}
+
+                                    <RatingModal
+                                        isOpen={showModal}
+                                        onClose={() => setShowModal(false)}
+                                        onSubmit={submitRating}
+                                    />
                                 </div>
                                 <div className="flex items-center gap-4 text-sm text-stone-500 font-medium">
                                     <span className="flex items-center gap-1.5">
