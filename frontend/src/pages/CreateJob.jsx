@@ -4,20 +4,23 @@ import DashboardLayout from "../components/DashboardLayout";
 import Card from "../components/Card";
 import Input from "../components/Input";
 import Button from "../components/Button";
+import LocationPicker from "../components/LocationPicker";
 
 function CreateJob() {
     const [skill, setSkill] = useState("");
     const [city, setCity] = useState("");
     const [area, setArea] = useState("");
     const [description, setDescription] = useState("");
+    const [location, setLocation] = useState(null);
 
     const handleSubmit = async () => {
         const res = await api.post("/jobs", {
-            
             skill,
             city,
             area,
             description,
+            lat: location?.lat,
+            lng: location?.lng,
         });
 
         localStorage.setItem("lastJobId", res.data.data.jobId);
@@ -50,6 +53,8 @@ function CreateJob() {
                         value={area}
                         onChange={(e) => setArea(e.target.value)}
                     />
+
+                    <LocationPicker setLocation={setLocation} />
 
                     <Input
                         placeholder="Job Description"
