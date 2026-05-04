@@ -2,13 +2,21 @@ import pool from "../../config/db.js";
 import AppError from "../../utils/AppError.js";
 
 export const createJob = async (data, clientId) => {
-    const { skill, city, area, description } = data;
+    const { skill, city, area, description, lat, lng } = data;
+
+    if (!skill || !city) {
+        throw new AppError("Skill and city are required", 400);
+    }
+
+    if (lat == null || lng == null) {
+        throw new AppError("Location is required", 400);
+    }
 
     const query = `
     INSERT INTO job_requests
-    (client_id, skill, city, area, description, status)
-    VALUES ($1,$2,$3,$4,$5,'pending')
-    RETURNING id, skill, city, area, status;
+    (client_id, skill, city, area, description, lat, lng, status)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,'pending')
+    RETURNING id, skill, city, area, status, created_at;
   `;
 
     const { rows } = await pool.query(query, [
@@ -17,6 +25,8 @@ export const createJob = async (data, clientId) => {
         city,
         area,
         description,
+        lat,
+        lng,
     ]);
 
     return rows[0];

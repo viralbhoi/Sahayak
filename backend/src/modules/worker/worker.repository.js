@@ -1,13 +1,21 @@
 import pool from "../../config/db.js";
 
-export const createWorker = async ({ name, phone, city, area, skills }) => {
+export const createWorker = async ({
+    name,
+    phone,
+    city,
+    area,
+    skills,
+    lat,
+    lng,
+}) => {
     const query = `
-    INSERT INTO workers (name, phone, city, area, skills)
-    VALUES ($1,$2,$3,$4,$5)
+    INSERT INTO workers (name, phone, city, area, skills, lat, lng)
+    VALUES ($1,$2,$3,$4,$5,$6,$7)
     RETURNING id, name, phone, city, area, skills, availability;
   `;
 
-    const { rows } = await pool.query(query, [name, phone, city, area, skills]);
+    const { rows } = await pool.query(query, [name, phone, city, area, skills, lat, lng]);
 
     return rows[0];
 };
