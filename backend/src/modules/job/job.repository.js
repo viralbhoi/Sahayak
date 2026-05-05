@@ -33,16 +33,44 @@ export const createJob = async (data, clientId) => {
 };
 
 export const getMatchesByJob = async (jobId) => {
-    const query = `
-    SELECT w.id, w.name, w.phone, w.city, w.rating
+    
+    const { rows: assigned } = await pool.query(
+        `
+    SELECT w.id, w.name, w.phone, w.area
+    FROM job_assignments ja
+    JOIN workers w ON w.id = ja.worker_id
+    WHERE ja.job_id = $1
+    `,
+        [jobId],
+    );
+
+
+    if (assigned.length > 0) {
+        return assigned.map((w) => ({
+            ...w,
+            status: "assigned",
+        }));
+    }
+
+    const { rows } = await pool.query(
+        `
+    SELECT 
+      w.id,
+      w.name,
+      w.phone,
+      w.area
     FROM matches m
     JOIN workers w ON w.id = m.worker_id
     WHERE m.job_id = $1
-    ORDER BY m.rank;
-    `;
+    ORDER BY m.rank
+    `,
+        [jobId],
+    );
 
-    const { rows } = await pool.query(query, [jobId]);
-    return rows;
+    return rows.map((w) => ({
+        ...w,
+        status: "suggested",
+    }));
 };
 
 export const findJobById = async (jobId) => {

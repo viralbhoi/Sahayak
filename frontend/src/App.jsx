@@ -15,6 +15,8 @@ import Landing from "./pages/Landing";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 import WorkerTasks from "./pages/WorkerTasks";
+import WorkerAssignedJobs from "./pages/WorkerAssignedJobs";
+import ChatPage from "./pages/ChatPage";
 
 function App() {
     return (
@@ -91,6 +93,24 @@ function App() {
                     element={
                         <ProtectedRoute role="worker">
                             <WorkerTasks />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/chat/:jobId"
+                    element={
+                        <ProtectedRoute>
+                            <ChatPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/dashboard/worker/assigned"
+                    element={
+                        <ProtectedRoute role="worker">
+                            <WorkerAssignedJobs />
                         </ProtectedRoute>
                     }
                 />

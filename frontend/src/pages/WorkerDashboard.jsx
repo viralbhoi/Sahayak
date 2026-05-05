@@ -132,6 +132,14 @@ function WorkerDashboard() {
                         >
                             <Search className="w-5 h-5" /> Browse Available Jobs
                         </button>
+
+                        <button
+                            onClick={() =>
+                                navigate("/dashboard/worker/assigned")
+                            }
+                        >
+                            My Jobs
+                        </button>
                     </div>
                 </div>
 

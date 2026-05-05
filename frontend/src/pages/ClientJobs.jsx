@@ -8,6 +8,7 @@ import {
     ChevronRight,
     PlusCircle,
     Users,
+    MessageSquare,
 } from "lucide-react";
 import RatingModal from "../components/RatingModal";
 
@@ -132,15 +133,44 @@ function ClientJobs() {
                                 </div>
                             </div>
 
-                            <button
-                                onClick={() =>
-                                    navigate(`/jobs/${job.id}/matches`)
-                                }
-                                className="flex items-center justify-center gap-2 bg-stone-50 hover:bg-amber-50 text-stone-700 hover:text-amber-800 border border-stone-200 hover:border-amber-300 px-6 py-3 rounded-xl font-semibold transition-all w-full md:w-auto shrink-0"
-                            >
-                                <Users className="w-4 h-4" /> View Matches{" "}
-                                <ChevronRight className="w-4 h-4" />
-                            </button>
+                            {job.status === "pending" && (
+                                <button
+                                    onClick={() =>
+                                        navigate(`/jobs/${job.id}/matches`)
+                                    }
+                                    className="flex items-center justify-center gap-2 bg-stone-50 hover:bg-amber-50 text-stone-700 hover:text-amber-800 border border-stone-200 hover:border-amber-300 px-6 py-3 rounded-xl font-semibold transition-all w-full md:w-auto shrink-0"
+                                >
+                                    <Users className="w-4 h-4" />
+                                    View Matches
+                                    <ChevronRight className="w-4 h-4" />
+                                </button>
+                            )}
+
+                            {job.status === "accepted" && (
+                                <button
+                                    onClick={() => navigate(`/chat/${job.id}`)}
+                                    className="flex items-center justify-center gap-2 bg-blue-100 hover:bg-blue-200 text-blue-800 px-6 py-3 rounded-xl font-semibold transition-all w-full md:w-auto shrink-0"
+                                >
+                                    <MessageSquare className="w-4 h-4" />
+                                    View Worker / Chat
+                                </button>
+                            )}
+
+                            {job.status === "in_progress" && (
+                                <button
+                                    onClick={() => navigate(`/chat/${job.id}`)}
+                                    className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all w-full md:w-auto shrink-0"
+                                >
+                                    <MessageSquare className="w-4 h-4" />
+                                    Continue Chat
+                                </button>
+                            )}
+
+                            {job.status === "completed" && (
+                                <span className="px-6 py-3 rounded-xl bg-green-100 text-green-700 font-semibold text-center">
+                                    Job Completed
+                                </span>
+                            )}
                         </div>
                     ))}
                 </div>

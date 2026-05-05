@@ -51,6 +51,12 @@ export const acceptJob = async (jobId, workerId) => {
         "client",
         "A worker has accepted your job",
     );
+
+    await notificationRepository.createNotification(
+        workerId,
+        "worker",
+        "You accepted a job",
+    );
 };
 
 export const startJob = async (jobId, workerId) => {
@@ -58,6 +64,7 @@ export const startJob = async (jobId, workerId) => {
 };
 
 export const completeJob = async (jobId, workerId) => {
+    const job = await jobRepository.findJobById(jobId);
     await jobRepository.updateJobStatus(jobId, "completed");
 
     await notificationRepository.createNotification(

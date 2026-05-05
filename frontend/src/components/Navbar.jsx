@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { LogOut, Bell } from "lucide-react";
 import { useEffect, useState } from "react";
-import api from "../utils/api";
+import api from "../api/api";
 
 function Navbar() {
     const [notifications, setNotifications] = useState([]);
@@ -20,13 +20,18 @@ function Navbar() {
         }
     };
 
+    const token = localStorage.getItem("token");
     // initial load
     useEffect(() => {
+        if (!token) return;
+
         fetchNotifications();
     }, []);
 
     // polling
     useEffect(() => {
+        if (!token) return;
+
         const interval = setInterval(fetchNotifications, 10000);
         return () => clearInterval(interval);
     }, []);
@@ -55,18 +60,20 @@ function Navbar() {
 
             <div className="flex items-center gap-4">
                 <div className="relative">
-                    <button
-                        onClick={() => setShowDropdown(!showDropdown)}
-                        className="relative"
-                    >
-                        <Bell className="w-5 h-5 text-stone-700" />
+                    {token && (
+                        <button
+                            onClick={() => setShowDropdown(!showDropdown)}
+                            className="relative"
+                        >
+                            <Bell className="w-5 h-5 text-stone-700" />
 
-                        {unread > 0 && (
-                            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
-                                {unread}
-                            </span>
-                        )}
-                    </button>
+                            {unread > 0 && (
+                                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                                    {unread}
+                                </span>
+                            )}
+                        </button>
+                    )}
 
                     {showDropdown && (
                         <div className="absolute right-0 mt-3 w-64 bg-white border rounded-xl shadow-lg p-3 z-50">
