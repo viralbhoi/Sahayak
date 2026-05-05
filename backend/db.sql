@@ -86,3 +86,6 @@ ADD COLUMN lng DOUBLE PRECISION;
 ALTER TABLE workers
 ADD COLUMN lat DOUBLE PRECISION,
 ADD COLUMN lng DOUBLE PRECISION;
+
+CREATE INDEX idx_job_location ON job_requests (lat, lng);
+CREATE INDEX idx_worker_location ON workers (lat, lng);`

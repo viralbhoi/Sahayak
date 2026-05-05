@@ -26,6 +26,7 @@ function WorkerRegister() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState(false);
+    const [location, setLocation] = useState(null);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -38,8 +39,23 @@ function WorkerRegister() {
         }
 
         setIsLoading(true);
+
         try {
-            // Convert comma-separated string to an array and trim spaces
+            const getLocation = () =>
+                new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => {
+                            resolve({
+                                lat: pos.coords.latitude,
+                                lng: pos.coords.longitude,
+                            });
+                        },
+                        (err) => reject(err),
+                    );
+                });
+
+            const location = await getLocation(); 
+
             const skillArray = skills
                 .split(",")
                 .map((s) => s.trim())
@@ -51,12 +67,14 @@ function WorkerRegister() {
                 city,
                 area,
                 skills: skillArray,
+                lat: location.lat,
+                lng: location.lng,
             });
 
             setSuccess(true);
-            setTimeout(() => navigate("/login"), 2000); // Redirect to login
+            setTimeout(() => navigate("/login"), 2000);
         } catch (err) {
-            setError("Registration failed. Please try again.");
+            setError("Registration failed or location denied.");
             console.error(err);
         } finally {
             setIsLoading(false);

@@ -101,6 +101,10 @@ function WorkerJobs() {
                                         {job.area}, {job.city}
                                     </p>
                                 </div>
+
+                                <p className="text-sm text-gray-500">
+                                    {job.distance?.toFixed(2)} km away
+                                </p>
                             </div>
 
                             {/* Actions */}

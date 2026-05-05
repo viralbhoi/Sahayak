@@ -28,3 +28,13 @@ export const updateSkills = asyncHandler(async (req, res) => {
     );
     success(res, worker);
 });
+
+export const updateLocation = asyncHandler(async (req, res) => {
+    const { lat, lng } = req.body;
+
+    const workerId = req.user.id;
+
+    const result = await workerService.updateLocation(workerId, lat, lng);
+
+    success(res, result);
+});

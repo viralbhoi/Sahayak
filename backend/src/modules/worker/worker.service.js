@@ -64,3 +64,17 @@ export const updateSkills = async (workerId, skills) => {
         .filter(Boolean);
     return await workerRepository.updateSkills(workerId, normalizedSkills);
 };
+
+export const updateLocation = async (workerId, lat, lng) => {
+    if (lat == null || lng == null) {
+        throw new AppError("Location required", 400);
+    }
+
+    const worker = await workerRepository.updateLocation(workerId, lat, lng);
+
+    if (!worker) {
+        throw new AppError("Worker not found", 404);
+    }
+
+    return worker;
+};

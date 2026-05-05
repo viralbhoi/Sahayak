@@ -6,6 +6,8 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import LocationPicker from "../components/LocationPicker";
 
+import "leaflet/dist/leaflet.css";
+
 function CreateJob() {
     const [skill, setSkill] = useState("");
     const [city, setCity] = useState("");
@@ -54,7 +56,7 @@ function CreateJob() {
                         onChange={(e) => setArea(e.target.value)}
                     />
 
-                    <LocationPicker setLocation={setLocation} />
+                    <LocationPicker setLocation={setLocation} className="w-full"/>
 
                     <Input
                         placeholder="Job Description"

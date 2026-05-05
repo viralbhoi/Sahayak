@@ -69,21 +69,47 @@ export const findByClientId = async (clientId) => {
 };
 
 export const findJobsForWorker = async (workerId) => {
-    const query = `     
-    SELECT 
-        j.id,
-        j.skill,
-        j.city,
-        j.area,
-        j.status,
-        m.rank
-    FROM matches m
-    JOIN job_requests j ON j.id = m.job_id
-    WHERE m.worker_id = $1
-      AND j.status = 'pending'
-    ORDER BY m.rank ASC;
+    const { rows: workerRows } = await pool.query(
+        `SELECT lat, lng FROM workers WHERE id = $1`,
+        [workerId],
+    );
+
+    const worker = workerRows[0];
+
+    if (!worker?.lat || !worker?.lng) {
+        const { rows } = await pool.query(
+            `
+      SELECT *
+      FROM job_requests
+      WHERE status = 'pending'
+      ORDER BY created_at DESC
+    `,
+        );
+        return rows;
+    }
+
+    const query = `
+    SELECT *
+    FROM (
+      SELECT j.*,
+        (
+          6371 * acos(
+            cos(radians($1)) * cos(radians(j.lat)) *
+            cos(radians(j.lng) - radians($2)) +
+            sin(radians($1)) * sin(radians(j.lat))
+          )
+        ) AS distance
+      FROM job_requests j
+      WHERE j.status = 'pending'
+        AND j.lat IS NOT NULL
+        AND j.lng IS NOT NULL
+    ) AS sub
+    WHERE distance < 10
+    ORDER BY distance ASC
   `;
-    const { rows } = await pool.query(query, [workerId]);
+
+    const { rows } = await pool.query(query, [worker.lat, worker.lng]);
+
     return rows;
 };
 

@@ -59,4 +59,11 @@ router.patch(
     workerController.updateSkills,
 );
 
+router.patch(
+    "/location",
+    protect,
+    allowRoles("worker"),
+    workerController.updateLocation,
+);
+
 export default router;

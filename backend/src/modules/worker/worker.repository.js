@@ -15,7 +15,15 @@ export const createWorker = async ({
     RETURNING id, name, phone, city, area, skills, availability;
   `;
 
-    const { rows } = await pool.query(query, [name, phone, city, area, skills, lat, lng]);
+    const { rows } = await pool.query(query, [
+        name,
+        phone,
+        city,
+        area,
+        skills,
+        lat,
+        lng,
+    ]);
 
     return rows[0];
 };
@@ -52,5 +60,19 @@ export const updateSkills = async (workerId, skillsArray) => {
         RETURNING id, skills;
     `;
     const { rows } = await pool.query(query, [skillsArray, workerId]);
+    return rows[0];
+};
+
+export const updateLocation = async (workerId, lat, lng) => {
+    const { rows } = await pool.query(
+        `
+    UPDATE workers
+    SET lat = $2, lng = $3
+    WHERE id = $1
+    RETURNING id, lat, lng;
+  `,
+        [workerId, lat, lng],
+    );
+
     return rows[0];
 };

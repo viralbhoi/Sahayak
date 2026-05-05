@@ -4,6 +4,7 @@ import api from "../api/api";
 import DashboardLayout from "../components/DashboardLayout";
 import Card from "../components/Card";
 import Input from "../components/Input";
+import LocationPicker from "../components/LocationPicker";
 import {
     Search,
     MapPin,
@@ -29,6 +30,8 @@ function WorkerDashboard() {
     const [skills, setSkills] = useState([]);
     const [newSkill, setNewSkill] = useState("");
     const [isUpdatingSkills, setIsUpdatingSkills] = useState(false);
+    const [location, setLocation] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const [isLoading, setIsLoading] = useState(true);
 
@@ -84,6 +87,26 @@ function WorkerDashboard() {
     const handleRemoveSkill = async (skillToRemove) => {
         const updated = skills.filter((s) => s !== skillToRemove);
         await updateSkillsInDb(updated);
+    };
+
+    const handleUpdateLocation = async () => {
+        if (!location) return;
+
+        setLoading(true);
+
+        try {
+            await api.patch("/workers/location", {
+                lat: location.lat,
+                lng: location.lng,
+            });
+
+            alert("Location updated successfully");
+        } catch (err) {
+            alert("Failed to update location");
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -260,6 +283,22 @@ function WorkerDashboard() {
                                 </button>
                             </form>
                         </div>
+                    </div>
+
+                    <div className="bg-white p-6 rounded-xl shadow">
+                        <h2 className="text-lg font-semibold mb-4">
+                            Update Your Location
+                        </h2>
+
+                        <LocationPicker setLocation={setLocation} />
+
+                        <button
+                            onClick={handleUpdateLocation}
+                            disabled={!location || loading}
+                            className="mt-4 bg-primary text-white px-4 py-2 rounded disabled:opacity-50"
+                        >
+                            {loading ? "Updating..." : "Confirm Location"}
+                        </button>
                     </div>
                 </Card>
             </div>
