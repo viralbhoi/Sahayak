@@ -1,5 +1,6 @@
 import * as jobRepository from "./job.repository.js";
 import * as matchingService from "../matching/matching.service.js";
+import * as notificationRepository from "../notification/notification.repository.js";
 import pool from "../../config/db.js";
 import AppError from "../../utils/AppError.js";
 
@@ -11,6 +12,12 @@ export const createJob = async (data, clientId) => {
 
     const job = await jobRepository.createJob(normalizedData, clientId);
     await matchingService.runMatching(job.id);
+
+    await notificationRepository.createNotification(
+        clientId,
+        "client",
+        "Your job has been posted successfully",
+    );
 
     return { jobId: job.id };
 };
@@ -38,6 +45,12 @@ export const getWorkerFeed = async (workerId) => {
 
 export const acceptJob = async (jobId, workerId) => {
     await jobRepository.assignJob(jobId, workerId);
+
+    await notificationRepository.createNotification(
+        job.client_id,
+        "client",
+        "A worker has accepted your job",
+    );
 };
 
 export const startJob = async (jobId, workerId) => {
@@ -46,6 +59,12 @@ export const startJob = async (jobId, workerId) => {
 
 export const completeJob = async (jobId, workerId) => {
     await jobRepository.updateJobStatus(jobId, "completed");
+
+    await notificationRepository.createNotification(
+        job.client_id,
+        "client",
+        "Your job has been completed",
+    );
 };
 
 export const getWorkerAssignments = async (workerId) => {
@@ -82,6 +101,12 @@ export const rateJob = async (jobId, clientId, rating, review) => {
     });
 
     await jobRepository.updateWorkerRating(workerId);
+
+    await notificationRepository.createNotification(
+        workerId,
+        "worker",
+        "You received a new rating",
+    );
 
     return { message: "Rating submitted" };
 };
