@@ -12,6 +12,8 @@ const router = express.Router();
 // Create worker (public)
 router.post("/", validate(createWorkerSchema), workerController.createWorker);
 
+router.get("/me", protect, allowRoles("worker"), workerController.getMe);
+
 // Get worker profile (protected)
 router.get(
     "/:id",

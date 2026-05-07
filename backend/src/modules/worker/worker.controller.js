@@ -38,3 +38,9 @@ export const updateLocation = asyncHandler(async (req, res) => {
 
     success(res, result);
 });
+
+export const getMe = asyncHandler(async (req, res) => {
+    const worker = await workerService.getWorkerById(req.user.id);
+
+    success(res, worker);
+});

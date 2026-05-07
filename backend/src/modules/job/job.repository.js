@@ -33,7 +33,6 @@ export const createJob = async (data, clientId) => {
 };
 
 export const getMatchesByJob = async (jobId) => {
-    
     const { rows: assigned } = await pool.query(
         `
     SELECT w.id, w.name, w.phone, w.area
@@ -43,7 +42,6 @@ export const getMatchesByJob = async (jobId) => {
     `,
         [jobId],
     );
-
 
     if (assigned.length > 0) {
         return assigned.map((w) => ({
@@ -96,7 +94,7 @@ export const findByClientId = async (clientId) => {
     return rows;
 };
 
-export const findJobsForWorker = async (workerId) => {
+export const findJobsForWorker = async (workerId, radius) => {
     const { rows: workerRows } = await pool.query(
         `SELECT lat, lng FROM workers WHERE id = $1`,
         [workerId],
@@ -132,11 +130,12 @@ export const findJobsForWorker = async (workerId) => {
         AND j.lat IS NOT NULL
         AND j.lng IS NOT NULL
     ) AS sub
-    WHERE distance < 10
+    WHERE distance <= $3
     ORDER BY distance ASC
+LIMIT 10
   `;
 
-    const { rows } = await pool.query(query, [worker.lat, worker.lng]);
+    const { rows } = await pool.query(query, [worker.lat, worker.lng, radius]);
 
     return rows;
 };

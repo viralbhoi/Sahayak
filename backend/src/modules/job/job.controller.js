@@ -21,7 +21,8 @@ export const getMyJobs = asyncHandler(async (req, res) => {
 });
 
 export const getWorkerFeed = asyncHandler(async (req, res) => {
-    const jobs = await jobService.getWorkerFeed(req.user.id);
+    const radius = Number(req.query.radius) || 10;
+    const jobs = await jobService.getWorkerFeed(req.user.id, radius);
     success(res, jobs);
 });
 

@@ -1,22 +1,28 @@
 import { useEffect, useState } from "react";
 import api from "../api/api";
 import DashboardLayout from "../components/DashboardLayout";
+import WorkerJobMap from "../components/WorkerJobMap";
 import {
     MapPin,
     Briefcase,
     CheckCircle,
     Loader2,
     MessageSquare,
+    Map as MapIcon,
+    List,
 } from "lucide-react";
 
 function WorkerJobs() {
     const [jobs, setJobs] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [acceptingId, setAcceptingId] = useState(null); // Tracks which job is currently being accepted
+    const [acceptingId, setAcceptingId] = useState(null);
+    const [viewMode, setViewMode] = useState("list"); // 'list' or 'map'
+    const [workerLocation, setWorkerLocation] = useState(null);
+    const [radius, setRadius] = useState(10);
 
     const fetchJobs = async () => {
         try {
-            const res = await api.get("/jobs/worker-feed");
+            const res = await api.get(`/jobs/worker-feed?radius=${radius}`);
             setJobs(res.data.data);
         } catch (err) {
             console.error("Failed to fetch job feed");
@@ -26,16 +32,40 @@ function WorkerJobs() {
     };
 
     useEffect(() => {
+        // Fetch Jobs
         fetchJobs();
-        const interval = setInterval(() => fetchJobs(), 5000);
+
+        fetchWorkerLocation();
+
+        // Auto refresh
+        const interval = setInterval(() => {
+            fetchJobs();
+            fetchWorkerLocation();
+        }, 5000);
+
         return () => clearInterval(interval);
-    }, []);
+    }, [radius]);
+
+    const fetchWorkerLocation = async () => {
+        try {
+            const workerData = await api.get("/workers/me");
+
+            if (workerData.data.data.lat && workerData.data.data.lng) {
+                setWorkerLocation({
+                    lat: workerData.data.data.lat,
+                    lng: workerData.data.data.lng,
+                });
+            }
+        } catch (err) {
+            console.error("Failed to fetch worker location");
+        }
+    };
 
     const acceptJob = async (id) => {
         setAcceptingId(id);
         try {
             await api.post(`/jobs/${id}/accept`);
-            await fetchJobs();
+            await fetchJobs(); // Refresh jobs after accepting
         } catch (err) {
             console.error("Failed to accept job");
             alert("Could not accept the job at this time.");
@@ -46,13 +76,56 @@ function WorkerJobs() {
 
     return (
         <DashboardLayout>
-            <div className="mb-8">
-                <h2 className="text-3xl font-bold text-stone-900">
-                    Available Jobs
-                </h2>
-                <p className="text-stone-500 mt-1">
-                    Live feed of work requests matching your skills and city.
-                </p>
+            <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div>
+                    <h2 className="text-3xl font-bold text-stone-900">
+                        Available Jobs
+                    </h2>
+                    <p className="text-stone-500 mt-1">
+                        Live feed of work requests matching your skills and
+                        city.
+                    </p>
+                </div>
+
+                <div className="flex items-center gap-3 mb-4">
+                    <span className="text-sm font-medium text-stone-600">
+                        Search Radius:
+                    </span>
+
+                    <select
+                        value={radius}
+                        onChange={(e) => setRadius(Number(e.target.value))}
+                        className="border border-stone-300 rounded-lg px-3 py-2 text-sm"
+                    >
+                        <option value={5}>5 km</option>
+                        <option value={10}>10 km</option>
+                        <option value={20}>20 km</option>
+                    </select>
+                </div>
+
+                {/* View Toggle Controls */}
+                <div className="flex items-center bg-stone-100 p-1 rounded-xl w-max border border-stone-200">
+                    <button
+                        onClick={() => setViewMode("list")}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                            viewMode === "list"
+                                ? "bg-white text-stone-900 shadow-sm"
+                                : "text-stone-500 hover:text-stone-700"
+                        }`}
+                    >
+                        <List className="w-4 h-4" /> List
+                    </button>
+                    <button
+                        onClick={() => setViewMode("map")}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                            viewMode === "map"
+                                ? "bg-white text-stone-900 shadow-sm"
+                                : "text-stone-500 hover:text-stone-700"
+                        }`}
+                    >
+                        <MapIcon className="w-4 h-4" /> Map
+                    </button>
+                </div>
             </div>
 
             {isLoading ? (
@@ -72,7 +145,17 @@ function WorkerJobs() {
                         in a few minutes!
                     </p>
                 </div>
+            ) : viewMode === "map" ? (
+                /* Map View Rendering */
+                <div className="bg-white p-2 rounded-2xl border border-stone-200 shadow-sm">
+                    <WorkerJobMap
+                        workerLocation={workerLocation}
+                        jobs={jobs}
+                        onAccept={acceptJob}
+                    />
+                </div>
             ) : (
+                /* List View Rendering */
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {jobs.map((job) => (
                         <div

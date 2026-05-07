@@ -39,8 +39,8 @@ export const getMyJobs = async (clientId) => {
     return await jobRepository.findByClientId(clientId);
 };
 
-export const getWorkerFeed = async (workerId) => {
-    return await jobRepository.findJobsForWorker(workerId);
+export const getWorkerFeed = async (workerId, radius) => {
+    return await jobRepository.findJobsForWorker(workerId, radius);
 };
 
 export const acceptJob = async (jobId, workerId) => {
