@@ -477,3 +477,125 @@ User is prompted, they are not authenticated and ask to login / register.
 ---
 
 ---
+
+Job Management Module
+
+These are the core of Sahayak.
+
+FR-006 Create Service Request
+
+Customer creates a new job request.
+
+FR-007 View Job Details
+
+Customer and assigned worker can view complete job details.
+
+FR-008 Update Job
+
+Customer updates job details before a worker is assigned.
+
+FR-009 Cancel Job
+
+Customer cancels an active request before work begins.
+
+FR-010 View Job History
+
+Users can view completed and cancelled jobs.
+
+Worker Management Module
+FR-011 Update Availability
+
+Worker changes availability status (Available, Busy, Offline).
+
+FR-012 Update Skills
+
+Worker updates professional skills and service categories.
+
+FR-013 Update Service Area
+
+Worker updates service radius or preferred service locations.
+
+FR-014 View Assigned Jobs
+
+Worker views current and upcoming jobs.
+
+FR-015 Accept Job
+
+Worker accepts a job offer.
+
+FR-016 Reject Job
+
+Worker declines a job offer.
+
+FR-017 Complete Job
+
+Worker marks work as completed.
+
+Matching & Recommendation Module
+
+This is the heart of the project.
+
+FR-018 Discover Candidate Workers
+
+System identifies eligible workers for a request.
+
+FR-019 Rank Candidate Workers
+
+System ranks workers using matching criteria.
+
+FR-020 Assign Worker
+
+System assigns the most appropriate worker.
+
+FR-021 Retry Matching
+
+System retries matching if no worker accepts.
+
+Communication Module
+FR-022 Send Message
+
+Customer and worker exchange messages.
+
+FR-023 View Conversation
+
+Users view chat history.
+
+FR-024 Receive Notifications
+
+Users receive real-time notifications.
+
+Feedback Module
+FR-025 Submit Customer Rating
+
+Customer rates worker.
+
+FR-026 Submit Worker Rating
+
+Worker rates customer.
+
+FR-027 View Ratings
+
+Users can view public ratings.
+
+Admin Module
+FR-028 Manage Users
+
+Admin manages customer and worker accounts.
+
+FR-029 Manage Jobs
+
+Admin monitors and moderates jobs.
+
+FR-030 Analytics Dashboard
+
+Admin views platform analytics.
+
+Future Module (Optional)
+
+These won't be part of MVP.
+
+FR-031 Report User
+FR-032 Block User
+FR-033 Verify Worker
+FR-034 Manage Service Categories
+FR-035 Search Services
