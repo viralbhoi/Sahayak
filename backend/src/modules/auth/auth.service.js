@@ -1,6 +1,10 @@
 import * as authRepository from "./auth.repository.js";
+import * as otpStore from "./otp.store.js";
+import * as constants from "./auth.constants.js";
 import AppError from "../../utils/AppError.js";
 import { generateToken } from "../../utils/jwt.js";
+import bcrypt from "bcrypt";
+import crypto from "crypto";
 
 export const requestOtp = async (phone) => {
     const user = await authRepository.findUserByPhone(phone);
@@ -10,38 +14,47 @@ export const requestOtp = async (phone) => {
     }
 
     // Rate limit check
-    const recentCount = await authRepository.countRecentOtps(phone);
+    const count = await otpStore.incrementOtpRequestCount(phone);
 
-    if (recentCount >= 3) {
+    if (count > constants.OTP_REQUEST_LIMIT) {
         throw new AppError(
             "Too many OTP requests. Try again after 5 minutes.",
             429,
         );
     }
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = crypto.randomInt(100000, 1000000).toString();
 
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+    const hashedOtp = await bcrypt.hash(otp, constants.OTP_HASH_ROUNDS);
 
-    await authRepository.saveOtp(phone, otp, expiresAt);
+    await otpStore.saveOtp(phone, hashedOtp);
 
-    console.log("OTP:", otp);
+    // TODO: Send OTP using Twilio
 
     return { message: "OTP sent successfully" };
 };
 
 export const verifyOtp = async (phone, otp) => {
-    const record = await authRepository.findLatestOtp(phone);
+    const hashedOtp = await otpStore.getOtp(phone);
 
-    if (!record || record.otp !== String(otp)) {
+    if (!hashedOtp) {
         throw new AppError("Invalid or expired OTP", 400);
     }
 
+    const isMatch = await bcrypt.compare(otp, hashedOtp);
+
+    if (!isMatch) {
+        throw new AppError("Invalid or expired OTP", 400);
+    }
+
+    await otpStore.deleteOtp(phone);
+
+    await otpStore.resetOtpRequestCount(phone);
+
     const user = await authRepository.findUserByPhone(phone);
 
-    const token = generateToken({
+    return generateToken({
         id: user.id,
         role: user.role,
     });
-    return token;
 };
