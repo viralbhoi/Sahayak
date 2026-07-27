@@ -132,3 +132,13 @@ export const verifyOtp = async ({ phone, otp, metadata }) => {
 
     return login(user, metadata);
 };
+
+export const me = async (userId) => {
+    const user = await authRepository.findById(userId);
+
+    if (!user) {
+        throw new AppError("User not found", 404);
+    }
+
+    return user;
+};

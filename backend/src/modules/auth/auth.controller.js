@@ -52,12 +52,11 @@ export const getSessions = asyncHandler(async (req, res) => {
     success(res, sessions);
 });
 
-export const me = async (userId) => {
-    const user = await authRepository.findById(userId);
 
-    if (!user) {
-        throw new AppError("User not found", 404);
-    }
+export const me = asyncHandler(async (req, res) => {
+    const user = await authService.me(req.user.userId);
 
-    return user;
-};
+    success(res, user);
+});
+
+
