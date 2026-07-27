@@ -1,8 +1,10 @@
 import * as authRepository from "./auth.repository.js";
+import * as sessionRepository from "./session.repository.js";
+import * as tokenService from "./token.service.js";
+import * as sessionService from "./session.service.js";
 import * as otpStore from "./otp.store.js";
 import * as constants from "./auth.constants.js";
 import AppError from "../../utils/AppError.js";
-import { generateToken } from "../../utils/jwt.js";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 
@@ -34,27 +36,99 @@ export const requestOtp = async (phone) => {
     return { message: "OTP sent successfully" };
 };
 
-export const verifyOtp = async (phone, otp) => {
+export const login = async (user, metadata) => {
+    const session = await sessionService.create({
+        user,
+        metadata,
+    });
+
+    const refreshToken = tokenService.generateRefreshToken({
+        sessionId: session.id,
+    });
+
+    const refreshTokenHash = await tokenService.hashToken(refreshToken);
+
+    await sessionRepository.updateRefreshTokenHash(
+        session.id,
+        refreshTokenHash,
+    );
+
+    const accessToken = tokenService.generateAccessToken({
+        userId: user.id,
+        role: user.role,
+        sessionId: session.id,
+    });
+
+    return {
+        accessToken,
+        refreshToken,
+    };
+};
+
+export const refresh = async (refreshToken) => {
+    const payload = tokenService.verifyRefreshToken(refreshToken);
+
+    const session = await sessionRepository.findById(payload.sessionId);
+
+    if (!session || session.revoked_at) {
+        throw new AppError("Invalid session", 401);
+    }
+
+    const valid = await tokenService.compareToken(
+        refreshToken,
+        session.refresh_token_hash,
+    );
+
+    if (!valid) {
+        throw new AppError("Invalid refresh token", 401);
+    }
+
+    await sessionRepository.updateLastActivity(session.id);
+
+    const user = await authRepository.findById(session.user_id);
+
+    const accessToken = tokenService.generateAccessToken({
+        userId: user.id,
+        role: user.role,
+        sessionId: session.id,
+    });
+
+    return { accessToken };
+};
+
+export const logout = async (sessionId) => {
+    await sessionRepository.revoke(sessionId);
+
+    return {
+        message: "Logged out successfully",
+    };
+};
+
+export const logoutAll = async (userId) => {
+    await sessionRepository.revokeAll(userId);
+
+    return {
+        message: "Logged out from all devices",
+    };
+};
+
+export const getSessions = async (userId) => {
+    return sessionRepository.findAllByUserId(userId);
+};
+
+export const verifyOtp = async ({ phone, otp, metadata }) => {
     const hashedOtp = await otpStore.getOtp(phone);
 
-    if (!hashedOtp) {
-        throw new AppError("Invalid or expired OTP", 400);
-    }
+    if (!hashedOtp) throw new AppError("OTP expired", 400);
 
-    const isMatch = await bcrypt.compare(otp, hashedOtp);
+    const valid = await bcrypt.compare(otp, hashedOtp);
 
-    if (!isMatch) {
-        throw new AppError("Invalid or expired OTP", 400);
-    }
+    if (!valid) throw new AppError("Invalid OTP", 400);
 
     await otpStore.deleteOtp(phone);
-
     await otpStore.resetOtpRequestCount(phone);
 
     const user = await authRepository.findUserByPhone(phone);
 
-    return generateToken({
-        id: user.id,
-        role: user.role,
-    });
+    return login(user, metadata);
 };

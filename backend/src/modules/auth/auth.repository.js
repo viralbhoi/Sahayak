@@ -1,17 +1,27 @@
 import pool from "../../config/db.js";
 
 export const findUserByPhone = async (phone) => {
-    const query = `
-    SELECT id, phone, 'worker' AS role
-    FROM workers
-    WHERE phone = $1
+    const { rows } = await pool.query(
+        `
+        SELECT id, phone, role
+        FROM users
+        WHERE phone = $1
+        `,
+        [phone],
+    );
 
-    UNION
+    return rows[0];
+};
 
-    SELECT id, phone, 'client' AS role
-    FROM clients
-    WHERE phone = $1;
-  `;
-    const { rows } = await pool.query(query, [phone]);
+export const findById = async (id) => {
+    const { rows } = await pool.query(
+        `
+        SELECT id, phone, role
+        FROM users
+        WHERE id = $1
+        `,
+        [id],
+    );
+
     return rows[0];
 };

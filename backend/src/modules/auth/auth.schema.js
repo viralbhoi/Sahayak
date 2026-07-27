@@ -1,10 +1,27 @@
-export const requestOtpSchema = (body) => {
-    if (!body.phone) return { error: "Phone is required" };
-    return {};
-};
+import { z } from "zod";
 
-export const verifyOtpSchema = (body) => {
-    if (!body.phone) return { error: "Phone is required" };
-    if (!body.otp) return { error: "OTP is required" };
-    return {};
-};
+export const requestOtpSchema = z.object({
+    body: z.object({
+        phone: z
+            .string()
+            .trim()
+            .regex(/^[6-9]\d{9}$/, "Invalid phone number"),
+    }),
+});
+
+export const verifyOtpSchema = z.object({
+    body: z.object({
+        phone: z
+            .string()
+            .trim()
+            .regex(/^[6-9]\d{9}$/, "Invalid phone number"),
+
+        otp: z.string().regex(/^\d{6}$/, "OTP must be exactly 6 digits"),
+    }),
+});
+
+export const refreshTokenSchema = z.object({
+    body: z.object({
+        refreshToken: z.string().min(1, "Refresh token is required"),
+    }),
+});

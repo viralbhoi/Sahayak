@@ -1,28 +1,32 @@
-import jwt from "jsonwebtoken";
+import asyncHandler from "../utils/asyncHandler.js";
 import AppError from "../utils/AppError.js";
+import * as tokenService from "../modules/auth/token.service.js";
+import * as sessionService from "../modules/auth/session.service.js";
 
-export const protect = (req, res, next) => {
-    let token;
+export const authenticate = asyncHandler(async (req, res, next) => {
+    const authHeader = req.headers.authorization;
 
-    if (
-        req.headers.authorization &&
-        req.headers.authorization.startsWith("Bearer ")
-    ) {
-        token = req.headers.authorization.split(" ")[1];
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        throw new AppError("Authentication required", 401);
     }
 
-    if (!token) {
-        return next(new AppError("Not authorized. No token provided.", 401));
+    const accessToken = authHeader.split(" ")[1];
+
+    const payload = tokenService.verifyAccessToken(accessToken);
+
+    const session = await sessionService.findById(payload.sessionId);
+
+    if (!session) {
+        throw new AppError("Session not found or expired", 401);
     }
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    await sessionService.touch(session.id);
 
-        req.user = decoded;
-        // decoded contains: { id, role, iat, exp }
+    req.user = {
+        userId: payload.userId,
+        role: payload.role,
+        sessionId: payload.sessionId,
+    };
 
-        next();
-    } catch (error) {
-        next(new AppError("Invalid or expired token", 401));
-    }
-};
+    next();
+});
