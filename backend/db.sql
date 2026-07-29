@@ -232,3 +232,19 @@ CREATE TABLE addresses (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+ALTER TABLE users
+ADD COLUMN name VARCHAR(100) NOT NULL DEFAULT '';
+
+CREATE EXTENSION IF NOT EXISTS citext;
+
+ALTER TABLE users
+ADD COLUMN email CITEXT UNIQUE;
+
+ALTER TABLE worker_profiles
+DROP COLUMN full_name,
+DROP COLUMN email;
+
+ALTER TABLE customer_profiles
+DROP COLUMN full_name,
+DROP COLUMN email;

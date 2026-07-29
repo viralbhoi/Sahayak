@@ -1,4 +1,4 @@
-import * as authRepository from "./auth.repository.js";
+import * as userRepository from "../user/user.repository.js";
 import * as sessionRepository from "./session.repository.js";
 import * as tokenService from "./token.service.js";
 import * as sessionService from "./session.service.js";
@@ -9,7 +9,7 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 
 export const requestOtp = async (phone) => {
-    const user = await authRepository.findUserByPhone(phone);
+    const user = await userRepository.findByPhone(phone);
 
     if (!user) {
         throw new AppError("User not registered", 404);
@@ -85,7 +85,7 @@ export const refresh = async (refreshToken) => {
 
     await sessionRepository.updateLastActivity(session.id);
 
-    const user = await authRepository.findById(session.user_id);
+    const user = await userRepository.findById(session.user_id);
 
     const accessToken = tokenService.generateAccessToken({
         userId: user.id,
@@ -128,17 +128,7 @@ export const verifyOtp = async ({ phone, otp, metadata }) => {
     await otpStore.deleteOtp(phone);
     await otpStore.resetOtpRequestCount(phone);
 
-    const user = await authRepository.findUserByPhone(phone);
+    const user = await userRepository.findByPhone(phone);
 
     return login(user, metadata);
-};
-
-export const me = async (userId) => {
-    const user = await authRepository.findById(userId);
-
-    if (!user) {
-        throw new AppError("User not found", 404);
-    }
-
-    return user;
 };

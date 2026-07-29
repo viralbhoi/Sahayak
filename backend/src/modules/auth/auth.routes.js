@@ -32,6 +32,4 @@ router.post("/logout-all", authenticate, authController.logoutAll);
 
 router.get("/sessions", authenticate, authController.getSessions);
 
-router.get("/me", authenticate, authController.me);
-
 export default router;

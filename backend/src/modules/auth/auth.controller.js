@@ -53,10 +53,5 @@ export const getSessions = asyncHandler(async (req, res) => {
 });
 
 
-export const me = asyncHandler(async (req, res) => {
-    const user = await authService.me(req.user.userId);
-
-    success(res, user);
-});
 
 
