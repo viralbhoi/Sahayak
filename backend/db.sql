@@ -109,6 +109,8 @@ CREATE TABLE messages (
 );
 
 
+----- v2 -----
+
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     phone VARCHAR(15) UNIQUE NOT NULL,
@@ -140,8 +142,93 @@ CREATE TABLE sessions (
 CREATE INDEX idx_sessions_user
 ON sessions(user_id);
 
-CREATE INDEX idx_sessions_refresh
-ON sessions(refresh_token_hash);
-
 CREATE INDEX idx_sessions_active
 ON sessions(user_id, revoked_at);
+
+
+CREATE TYPE availability_status_enum AS ENUM (
+    'OFFLINE',
+    'AVAILABLE',
+    'BUSY'
+);
+
+CREATE TYPE verification_status_enum AS ENUM (
+    'PENDING',
+    'VERIFIED',
+    'REJECTED'
+);
+
+CREATE TABLE worker_profiles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID UNIQUE NOT NULL
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(255),
+    bio TEXT,
+    experience_years INTEGER DEFAULT 0,
+    availability_status availability_status_enum
+        NOT NULL DEFAULT 'OFFLINE',
+    verification_status verification_status_enum
+        NOT NULL DEFAULT 'PENDING',
+
+    rating NUMERIC(3,2) DEFAULT 0,
+    total_reviews INTEGER DEFAULT 0,
+    completed_jobs INTEGER DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE customer_profiles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    user_id UUID UNIQUE NOT NULL
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(255),
+    preferred_language VARCHAR(30),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE skills (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(100) UNIQUE NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE worker_skills (
+    worker_id UUID NOT NULL
+        REFERENCES worker_profiles(id)
+        ON DELETE CASCADE,
+
+    skill_id UUID NOT NULL
+        REFERENCES skills(id)
+        ON DELETE CASCADE,
+
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    PRIMARY KEY (worker_id, skill_id)
+);
+
+CREATE TABLE addresses (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    user_id UUID NOT NULL
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    label VARCHAR(50),
+    address_line_1 TEXT NOT NULL,
+    address_line_2 TEXT,
+    city VARCHAR(100) NOT NULL,
+    state VARCHAR(100) NOT NULL,
+    postal_code VARCHAR(20) NOT NULL,
+    latitude NUMERIC(10,7),
+    longitude NUMERIC(10,7),
+    is_default BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
